@@ -1,0 +1,89 @@
+.menu-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* Altura fixa do cabeçalho */
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.menu-logo {
+  max-height: 40px; /* Limita a altura máxima da logo */
+  max-width: 100px; /* Opcional, limita a largura máxima */
+  object-fit: contain; /* Garante que a proporção seja mantida */
+}
+
+.side-menu {
+  position: fixed;
+  top: 60px; /* Fica abaixo do header */
+  left: -250px; /* Oculto inicialmente */
+  width: 250px;
+  height: calc(100% - 60px);
+  background-color: rgba(0, 0, 0, 0.9);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  transition: left 0.3s ease;
+  z-index: 9;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  
+}
+
+.side-menu.open {
+  left: 0; /* Menu visível */
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.side-menu li {
+  font-size: 1.2rem;
+  color: white;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-decoration: none; /* Remove underline */
+}
+
+.side-menu li a {
+  color: white;
+  text-decoration: none; /* Remove underline */
+}
+
+.side-menu li a:focus,
+.side-menu li a:active {
+  color: #ff5e00; /* Cor laranja quando clicado ou foco */
+}
+
+.side-menu li:hover {
+  color: #ff5e00;
+}
+
+/* Responsividade: ajusta menu para dispositivos móveis */
+@media (max-width: 768px) {
+  .side-menu {
+    width: 200px;
+  }
+
+  .side-menu li {
+    font-size: 1rem;
+  }
+}

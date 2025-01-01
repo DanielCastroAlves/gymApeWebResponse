@@ -1,29 +1,51 @@
 .inputContainer {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-  
-  .inputLabel {
-    font-size: 14px;
-    color: #000;
-    margin-bottom: 5px;
-    display: block;
-  }
-  
-  .inputField {
-    background-color: #f9f9f9;
-    color: #000;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    width: 100%;
-  }
-  
-  .inputError {
-    font-size: 12px;
-    color: #ff6b6b;
-    margin-top: 5px;
-    display: block;
-  }
-  
+  width: 100%;
+  margin-bottom: 15px;
+  position: relative; /* Necessário para posicionar a label dentro do input */
+}
+
+.inputField {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 16px;
+  color: #fff; /* Texto branco */
+  background: rgba(255, 255, 255, 0.1); /* Fundo translúcido */
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Borda branca translúcida */
+  border-radius: 8px; /* Bordas arredondadas */
+  outline: none; /* Remove o contorno azul padrão */
+  transition: all 0.3s ease;
+}
+
+.inputField::placeholder {
+  color: transparent; /* Placeholder invisível para que a label fique visível */
+}
+
+.inputField:focus {
+  border-color: #007bff; /* Borda azul ao focar */
+  background-color: rgba(255, 255, 255, 0.2); /* Fundo mais claro ao focar */
+}
+
+.inputField:focus + .inputLabel,
+.inputField:not(:placeholder-shown) + .inputLabel {
+  top: -10px; /* Move a label para cima */
+  font-size: 12px; /* Diminui o tamanho da label */
+  color: #007bff; /* Muda a cor da label ao focar ou preencher */
+}
+
+.inputLabel {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7); /* Cor branca com opacidade */
+  font-size: 16px;
+  pointer-events: none; /* Evita que a label seja clicável */
+  transition: all 0.3s ease; /* Transição suave para a label */
+}
+
+.inputError {
+  font-size: 12px;
+  color: #ff6b6b; /* Vermelho para mensagens de erro */
+  margin-top: 5px;
+  display: block;
+}

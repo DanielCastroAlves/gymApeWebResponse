@@ -1,5 +1,6 @@
 import React from 'react';
 import './BotaoVoltar.css';
+import { FaArrowLeft } from 'react-icons/fa'; // Importa o ícone de seta
 
 interface BotaoVoltarProps {
   onClick: () => void;
@@ -8,7 +9,8 @@ interface BotaoVoltarProps {
 const BotaoVoltar: React.FC<BotaoVoltarProps> = ({ onClick }) => {
   return (
     <button className="botaoVoltar" onClick={onClick}>
-      ← Voltar
+      <FaArrowLeft className="icon" />
+      Voltar
     </button>
   );
 };
