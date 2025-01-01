@@ -57,25 +57,23 @@ body {
 
 .login-subtitle {
   font-size: 1rem;
-  color: #666;
+  color: #ffffff;
   margin-bottom: 1rem;
 }
 
 /* Links e botões */
 .signup-text {
-  font-size: 1rem;
-  color: #333;
+  font-size: 2rem;
+  color: #d4d1d0;
+ 
 }
 
 .signup-link {
-  color: #007bff;
-  text-decoration: underline;
+  color: #ff5e00 !important;
+  text-decoration: underline !important;
   cursor: pointer;
 }
 
-.signup-link:hover {
-  color: #0056b3;
-}
 
 /* Responsividade */
 @media (max-width: 768px) {

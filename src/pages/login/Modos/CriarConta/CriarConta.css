@@ -1,23 +1,48 @@
+/* Container principal */
 .criar-conta-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('../../../../assets/imagens/imagem-de-fundo.png') no-repeat center center / cover;
+  position: relative;
+}
+
+.criar-conta-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Escurece o fundo */
+  z-index: 1;
+}
+
+.criar-conta-content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 20px;
   padding: 2rem;
-  height: 100vh;
+  max-width: 400px;
+  width: 100%;
   box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.3); /* Fundo translúcido */
+  border-radius: 15px;
   text-align: center;
-  background: linear-gradient(to bottom, #f9f9f9, #e0e0e0); /* Fundo claro */
 }
 
+/* Logo */
 .logo {
-  width: 100%;
-  max-width: 120px; /* Limita o tamanho máximo */
-  height: auto; /* Mantém a proporção */
+  max-width: 100px;
+  height: auto;
   margin-bottom: 1rem;
 }
 
+/* Botões sociais */
 .botoes-sociais {
   display: flex;
   flex-direction: column;
@@ -26,39 +51,33 @@
   max-width: 300px;
 }
 
+/* Texto divisório */
 .divider-text {
   font-size: 1rem;
-  color: #666;
+  color: #ffffff;
   margin: 10px 0;
 }
 
+/* Texto inferior */
 .already-account {
   font-size: 0.9rem;
-  color: #333;
+  color: #ffffff;
 }
 
 .login-link {
-  color: #007bff;
-  text-decoration: underline;
+  color: #ff5e00 !important;
+  text-decoration: underline !important;
   cursor: pointer;
 }
 
 .login-link:hover {
-  color: #0056b3;
+  color: #8599ad;
 }
 
 /* Responsividade */
 @media (max-width: 768px) {
-  .criar-conta-container {
-    padding: 1rem;
-  }
-
   .logo {
-    max-width: 100px; /* Reduz a logo para tablets */
-  }
-
-  .botoes-sociais {
-    max-width: 250px;
+    max-width: 90px;
   }
 
   .divider-text {
@@ -71,17 +90,8 @@
 }
 
 @media (max-width: 480px) {
-  .criar-conta-container {
-    padding: 0.5rem;
-    gap: 15px;
-  }
-
   .logo {
-    max-width: 80px; /* Reduz a logo ainda mais para dispositivos pequenos */
-  }
-
-  .botoes-sociais {
-    max-width: 200px;
+    max-width: 70px;
   }
 
   .divider-text {

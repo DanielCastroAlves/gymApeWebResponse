@@ -1,0 +1,112 @@
+.page-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("../../assets/imagens/imagem-de-fundo.png") no-repeat center
+    center / cover;
+  position: relative;
+}
+
+.page-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Escurece o fundo */
+  z-index: 1;
+}
+
+.page-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.3); /* Fundo translúcido para texto */
+  border-radius: 15px;
+  text-align: center;
+}
+
+.page-header {
+  font-size: 2rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  margin-left: 10px;
+}
+
+
+.page-content p {
+  font-size: 1rem;
+  color: #ffffff;
+  margin-top: 0;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  color: #ffffff;
+}
+
+/* Adiciona a animação para "em construção" */
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.under-construction-message {
+  font-size: 1rem !important;
+  color: #ff5e00;
+  text-align: center;
+  position: absolute;
+  z-index: 10;
+  bottom: 10%;
+  width: 100%;
+  z-index: -99px !important;
+}
+
+.under-construction-logo {
+  width: 100px;
+  margin: 20px auto;
+  animation: rotate 5s linear infinite !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .page-content {
+    padding: 1rem;
+  }
+
+  .page-header {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header {
+    font-size: 1.3rem;
+  }
+}
