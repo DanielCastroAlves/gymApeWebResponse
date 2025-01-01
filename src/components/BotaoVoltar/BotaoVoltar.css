@@ -1,0 +1,13 @@
+.botaoVoltar {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.botaoVoltar:hover {
+  color: #0056b3;
+}

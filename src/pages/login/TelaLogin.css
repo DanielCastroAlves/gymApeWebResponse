@@ -1,0 +1,17 @@
+/* Container principal da página */
+.tela-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to bottom, #f9f9f9, #e0e0e0); /* Fundo com degradê suave */
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Responsividade geral */
+@media (max-width: 768px) {
+  .tela-login-container {
+    padding: 0.5rem;
+  }
+}

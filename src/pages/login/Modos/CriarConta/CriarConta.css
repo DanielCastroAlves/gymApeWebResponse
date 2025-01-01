@@ -1,0 +1,94 @@
+.criar-conta-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 2rem;
+  height: 100vh;
+  box-sizing: border-box;
+  text-align: center;
+  background: linear-gradient(to bottom, #f9f9f9, #e0e0e0); /* Fundo claro */
+}
+
+.logo {
+  width: 100%;
+  max-width: 120px; /* Limita o tamanho máximo */
+  height: auto; /* Mantém a proporção */
+  margin-bottom: 1rem;
+}
+
+.botoes-sociais {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.divider-text {
+  font-size: 1rem;
+  color: #666;
+  margin: 10px 0;
+}
+
+.already-account {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.login-link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.login-link:hover {
+  color: #0056b3;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .criar-conta-container {
+    padding: 1rem;
+  }
+
+  .logo {
+    max-width: 100px; /* Reduz a logo para tablets */
+  }
+
+  .botoes-sociais {
+    max-width: 250px;
+  }
+
+  .divider-text {
+    font-size: 0.9rem;
+  }
+
+  .already-account {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .criar-conta-container {
+    padding: 0.5rem;
+    gap: 15px;
+  }
+
+  .logo {
+    max-width: 80px; /* Reduz a logo ainda mais para dispositivos pequenos */
+  }
+
+  .botoes-sociais {
+    max-width: 200px;
+  }
+
+  .divider-text {
+    font-size: 0.8rem;
+  }
+
+  .already-account {
+    font-size: 0.75rem;
+  }
+}

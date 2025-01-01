@@ -1,0 +1,37 @@
+.botao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  max-width: 300px;
+  width: 100%;
+}
+
+.botao:hover {
+  background-color: #0056b3;
+}
+
+.botaoDesabilitado {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.conteudoBotao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

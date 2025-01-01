@@ -1,0 +1,82 @@
+.bem-vindo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 2rem;
+  height: 100vh;
+  box-sizing: border-box;
+  background: linear-gradient(to bottom, #f9f9f9, #e0e0e0); /* Fundo claro */
+  text-align: center;
+}
+
+.logo {
+  max-width: 120px; /* Define o tamanho máximo da logo */
+  height: auto;
+  margin-bottom: 1rem; /* Espaçamento entre a logo e o título */
+}
+
+.bem-vindo-titulo {
+  font-size: 2rem;
+  color: #000;
+  margin: 0.5rem 0;
+}
+
+.bem-vindo-links {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 300px;
+}
+
+.bem-vindo-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.bem-vindo-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .bem-vindo-container {
+    padding: 1rem;
+  }
+
+  .logo {
+    max-width: 100px; /* Reduz o tamanho da logo para tablets */
+  }
+
+  .bem-vindo-titulo {
+    font-size: 1.8rem;
+  }
+
+  .bem-vindo-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bem-vindo-container {
+    padding: 0.5rem;
+    gap: 15px;
+  }
+
+  .logo {
+    max-width: 80px; /* Reduz o tamanho da logo para dispositivos menores */
+  }
+
+  .bem-vindo-titulo {
+    font-size: 1.5rem;
+  }
+
+  .bem-vindo-links {
+    gap: 8px;
+  }
+}
