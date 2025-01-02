@@ -12,7 +12,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <Router>
+    <Router basename="/gymApeWebResponse">
       <Routes>
         <Route path="/" element={<TelaLogin />} />
         <Route path="/home" element={<HomePage onLogout={handleLogout} />} />
