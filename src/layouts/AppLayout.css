@@ -1,0 +1,24 @@
+.app-shell {
+  width: 100vw;
+  min-height: 100vh;
+  background: url("../assets/imagens/imagem-de-fundo.png") no-repeat center center /
+    cover;
+  position: relative;
+  padding-top: 60px; /* altura do Menu */
+  box-sizing: border-box;
+}
+
+.app-shell-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.app-shell-content {
+  position: relative;
+  z-index: 2;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+

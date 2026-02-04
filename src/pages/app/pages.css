@@ -1,0 +1,65 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  color: #fff;
+}
+
+.pageHeader {
+  margin-bottom: 1.25rem;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.pageHeader p {
+  margin: 0.35rem 0 0;
+  opacity: 0.9;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+}
+
+.card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.cardLink {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: #ff5e00;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.hint {
+  display: inline-block;
+  margin-top: 0.5rem;
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
