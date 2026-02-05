@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './Menu.css';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useI18n } from '../../i18n/I18nProvider';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 
 interface MenuProps {
   logo: string;
@@ -10,6 +12,7 @@ interface MenuProps {
 }
 const Menu: React.FC<MenuProps> = ({ logo, mode = 'aluno', onLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useI18n();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -22,29 +25,32 @@ const Menu: React.FC<MenuProps> = ({ logo, mode = 'aluno', onLogout }) => {
       <button className="menu-button" onClick={toggleMenu}>
         {menuOpen ? <FaTimes /> : <FaBars />}
       </button>
-      <img src={logo} alt="Logo" className="menu-logo" />
+      <img src={logo} alt={t('menu.logoAlt')} className="menu-logo" />
+      <div className="menu-right">
+        <LanguageSwitcher />
+      </div>
       <nav className={`side-menu ${menuOpen ? 'open' : ''}`}>
         <ul>
           {mode === 'aluno' ? (
             <>
               <li>
                 <Link to="/app" onClick={closeMenu}>
-                  Dashboard
+                  {t('menu.dashboard')}
                 </Link>
               </li>
               <li>
                 <Link to="/app/treinos" onClick={closeMenu}>
-                  Treinos
+                  {t('menu.workouts')}
                 </Link>
               </li>
               <li>
                 <Link to="/app/progresso" onClick={closeMenu}>
-                  Progresso
+                  {t('menu.progress')}
                 </Link>
               </li>
               <li>
                 <Link to="/app/ranking" onClick={closeMenu}>
-                  Ranking
+                  {t('menu.ranking')}
                 </Link>
               </li>
             </>
@@ -52,27 +58,27 @@ const Menu: React.FC<MenuProps> = ({ logo, mode = 'aluno', onLogout }) => {
             <>
               <li>
                 <Link to="/admin" onClick={closeMenu}>
-                  Visão geral
+                  {t('menu.overview')}
                 </Link>
               </li>
               <li>
                 <Link to="/admin/alunos" onClick={closeMenu}>
-                  Alunos
+                  {t('menu.students')}
                 </Link>
               </li>
               <li>
                 <Link to="/admin/treinos" onClick={closeMenu}>
-                  Treinos
+                  {t('menu.workouts')}
                 </Link>
               </li>
               <li>
                 <Link to="/admin/desafios" onClick={closeMenu}>
-                  Desafios
+                  {t('menu.challenges')}
                 </Link>
               </li>
               <li>
                 <Link to="/admin/ranking" onClick={closeMenu}>
-                  Ranking
+                  {t('menu.ranking')}
                 </Link>
               </li>
             </>
@@ -89,7 +95,7 @@ const Menu: React.FC<MenuProps> = ({ logo, mode = 'aluno', onLogout }) => {
                   onLogout();
                 }}
               >
-                Sair
+                {t('menu.logout')}
               </a>
             </li>
           )}

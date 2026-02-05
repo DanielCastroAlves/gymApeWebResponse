@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import './pages.css';
 import { apiFetch } from '../../api/client';
+import { useI18n } from '../../i18n/I18nProvider';
 
 type Aluno = { id: string; name: string; email: string };
 type Workout = {
@@ -21,6 +22,7 @@ type WorkoutItemDraft = {
 };
 
 export default function TreinosAdmin() {
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [alunos, setAlunos] = useState<Aluno[]>([]);
@@ -55,7 +57,7 @@ export default function TreinosAdmin() {
       setAlunos(a.alunos);
       setWorkouts(w.workouts);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Falha ao carregar dados.');
+      setError(e instanceof Error ? e.message : t('admin.workouts.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -96,7 +98,7 @@ export default function TreinosAdmin() {
       setItems([{ name: '' }]);
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Falha ao criar treino.');
+      setError(e instanceof Error ? e.message : t('admin.workouts.createFailed'));
     } finally {
       setCreating(false);
     }
@@ -113,7 +115,7 @@ export default function TreinosAdmin() {
       });
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Falha ao atribuir treino.');
+      setError(e instanceof Error ? e.message : t('admin.workouts.assignFailed'));
     } finally {
       setAssigning(false);
     }
@@ -122,8 +124,8 @@ export default function TreinosAdmin() {
   return (
     <div className="page">
       <header className="pageHeader">
-        <h1>Treinos (Admin)</h1>
-        <p>Crie treinos padrão (templates) e atribua treinos personalizados aos alunos.</p>
+        <h1>{t('admin.workouts.title')}</h1>
+        <p>{t('admin.workouts.subtitle')}</p>
       </header>
 
       {error && (
@@ -133,20 +135,28 @@ export default function TreinosAdmin() {
       )}
 
       <section className="card" style={{ marginBottom: '1rem' }}>
-        <h2>Criar treino template</h2>
+        <h2>{t('admin.workouts.createTemplateTitle')}</h2>
         <div className="formGrid" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
           <label className="field">
-            <span>Título</span>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex.: Treino A - Peito/Tríceps" />
+            <span>{t('admin.workouts.templateTitle')}</span>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={t('admin.workouts.templateTitlePlaceholder')}
+            />
           </label>
           <label className="field">
-            <span>Objetivo</span>
-            <input value={objective} onChange={(e) => setObjective(e.target.value)} placeholder="Ex.: Hipertrofia" />
+            <span>{t('admin.workouts.objective')}</span>
+            <input
+              value={objective}
+              onChange={(e) => setObjective(e.target.value)}
+              placeholder={t('admin.workouts.objectivePlaceholder')}
+            />
           </label>
         </div>
 
         <div className="card" style={{ background: 'rgba(0,0,0,0.25)', borderColor: 'rgba(255,255,255,0.12)' }}>
-          <h3 style={{ marginTop: 0 }}>Itens do treino</h3>
+          <h3 style={{ marginTop: 0 }}>{t('admin.workouts.workoutItemsTitle')}</h3>
           {items.map((it, idx) => (
             <div
               key={idx}
@@ -154,7 +164,7 @@ export default function TreinosAdmin() {
               style={{ gridTemplateColumns: '2fr 0.6fr 0.8fr 0.8fr 0.8fr', alignItems: 'end' }}
             >
               <label className="field">
-                <span>Exercício</span>
+                <span>{t('admin.workouts.exercise')}</span>
                 <input
                   value={it.name}
                   onChange={(e) => {
@@ -162,11 +172,11 @@ export default function TreinosAdmin() {
                     next[idx] = { ...next[idx], name: e.target.value };
                     setItems(next);
                   }}
-                  placeholder="Ex.: Supino reto"
+                  placeholder={t('admin.workouts.exercisePlaceholder')}
                 />
               </label>
               <label className="field">
-                <span>Séries</span>
+                <span>{t('admin.workouts.sets')}</span>
                 <input
                   value={it.sets ?? ''}
                   onChange={(e) => {
@@ -180,7 +190,7 @@ export default function TreinosAdmin() {
                 />
               </label>
               <label className="field">
-                <span>Reps</span>
+                <span>{t('admin.workouts.reps')}</span>
                 <input
                   value={it.reps ?? ''}
                   onChange={(e) => {
@@ -192,7 +202,7 @@ export default function TreinosAdmin() {
                 />
               </label>
               <label className="field">
-                <span>Carga</span>
+                <span>{t('admin.workouts.weight')}</span>
                 <input
                   value={it.weight ?? ''}
                   onChange={(e) => {
@@ -204,7 +214,7 @@ export default function TreinosAdmin() {
                 />
               </label>
               <label className="field">
-                <span>Descanso (s)</span>
+                <span>{t('admin.workouts.restSeconds')}</span>
                 <input
                   value={it.rest_seconds ?? ''}
                   onChange={(e) => {
@@ -226,7 +236,7 @@ export default function TreinosAdmin() {
               type="button"
               onClick={() => setItems((prev) => [...prev, { name: '' }])}
             >
-              + Adicionar item
+              {t('admin.workouts.addItem')}
             </button>
             <button
               className="primaryBtn"
@@ -234,31 +244,31 @@ export default function TreinosAdmin() {
               onClick={() => setItems((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))}
               disabled={items.length <= 1}
             >
-              Remover último
+              {t('admin.workouts.removeLast')}
             </button>
           </div>
         </div>
 
         <button className="primaryBtn" onClick={handleCreateTemplate} disabled={!canCreateTemplate || creating}>
-          {creating ? 'Salvando...' : 'Salvar template'}
+          {creating ? t('admin.workouts.saving') : t('admin.workouts.saveTemplate')}
         </button>
       </section>
 
       <section className="card" style={{ marginBottom: '1rem' }}>
-        <h2>Atribuir template para aluno (gera treino personalizado)</h2>
+        <h2>{t('admin.workouts.assignSectionTitle')}</h2>
         {loading ? (
-          <p>Carregando...</p>
+          <p>{t('common.loading')}</p>
         ) : (
           <>
             <div className="formGrid" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
               <label className="field">
-                <span>Aluno</span>
+                <span>{t('admin.workouts.student')}</span>
                 <select
                   value={selectedAlunoId}
                   onChange={(e) => setSelectedAlunoId(e.target.value)}
                   style={{ padding: '0.65rem 0.75rem', borderRadius: 10 }}
                 >
-                  <option value="">Selecione...</option>
+                  <option value="">{t('admin.workouts.select')}</option>
                   {alunos.map((a) => (
                     <option key={a.id} value={a.id}>
                       {a.name} ({a.email})
@@ -267,13 +277,13 @@ export default function TreinosAdmin() {
                 </select>
               </label>
               <label className="field">
-                <span>Template</span>
+                <span>{t('admin.workouts.template')}</span>
                 <select
                   value={selectedTemplateId}
                   onChange={(e) => setSelectedTemplateId(e.target.value)}
                   style={{ padding: '0.65rem 0.75rem', borderRadius: 10 }}
                 >
-                  <option value="">Selecione...</option>
+                  <option value="">{t('admin.workouts.select')}</option>
                   {templates.map((t) => (
                     <option key={t.id} value={t.id}>
                       {t.title} — {t.objective}
@@ -283,24 +293,24 @@ export default function TreinosAdmin() {
               </label>
             </div>
             <button className="primaryBtn" onClick={handleAssign} disabled={!selectedAlunoId || !selectedTemplateId || assigning}>
-              {assigning ? 'Atribuindo...' : 'Atribuir treino'}
+              {assigning ? t('admin.workouts.assigning') : t('admin.workouts.assignWorkout')}
             </button>
           </>
         )}
       </section>
 
       <section className="card">
-        <h2>Templates cadastrados</h2>
+        <h2>{t('admin.workouts.registeredTemplates')}</h2>
         {loading ? (
-          <p>Carregando...</p>
+          <p>{t('common.loading')}</p>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="table">
               <thead>
                 <tr>
-                  <th>Título</th>
-                  <th>Objetivo</th>
-                  <th>Criado em</th>
+                  <th>{t('admin.workouts.templateTitle')}</th>
+                  <th>{t('admin.workouts.objective')}</th>
+                  <th>{t('admin.students.createdAt')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -313,7 +323,7 @@ export default function TreinosAdmin() {
                 ))}
                 {!templates.length && (
                   <tr>
-                    <td colSpan={3}>Nenhum template cadastrado.</td>
+                    <td colSpan={3}>{t('admin.workouts.empty')}</td>
                   </tr>
                 )}
               </tbody>

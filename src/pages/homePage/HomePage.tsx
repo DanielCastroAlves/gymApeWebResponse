@@ -4,6 +4,7 @@ import Botao from '../../components/Botao';
 import Menu from '../../components/Menu/Menu';
 import logo from '../../assets/imagens/logoNovoSemBg.png';
 import './HomePage.css';
+import { useI18n } from '../../i18n/I18nProvider';
 
 interface HomePageProps {
   onLogout: () => void;
@@ -11,6 +12,7 @@ interface HomePageProps {
 
 const HomePage: React.FC<HomePageProps> = ({ onLogout }) => {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   const handleLogout = () => {
     // Lógica para finalizar a sessão do usuário
@@ -25,9 +27,9 @@ const HomePage: React.FC<HomePageProps> = ({ onLogout }) => {
       <div className="home-page-overlay"></div>
       <Menu logo={logo} />
       <main className="home-page-content">
-        <h1>Bem-vindo ao Ape Gym!</h1>
-        <p>Essa é uma página de teste da home. Explore seus treinos e acompanhe seu progresso!</p>
-        <Botao title="Logoff" onClick={handleLogout} />
+        <h1>{t('home.welcome')}</h1>
+        <p>{t('home.subtitle')}</p>
+        <Botao title={t('home.logoff')} onClick={handleLogout} />
       </main>
     </div>
   );

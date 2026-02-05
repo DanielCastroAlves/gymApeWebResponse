@@ -1,8 +1,10 @@
+import { t as i18nT } from '../i18n/i18n';
+
 const TOKEN_KEY = 'apegym.auth.token';
 
 function getBaseUrl() {
   const base = import.meta.env.VITE_API_URL as string | undefined;
-  if (!base) throw new Error('Backend não configurado. Defina VITE_API_URL no .env do front.');
+  if (!base) throw new Error(i18nT('auth.errors.backendNotConfigured'));
   return base.endsWith('/') ? base.slice(0, -1) : base;
 }
 
@@ -23,7 +25,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
   const json = text ? (JSON.parse(text) as any) : undefined;
 
   if (!res.ok) {
-    const message = json?.error?.message ?? `Erro ${res.status}`;
+    const message = json?.error?.message ?? i18nT('auth.errors.genericHttpError', { status: res.status });
     throw new Error(message);
   }
 

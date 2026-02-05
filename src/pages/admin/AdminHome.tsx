@@ -1,19 +1,21 @@
 import './pages.css';
+import { useI18n } from '../../i18n/I18nProvider';
 
 export default function AdminHome() {
+  const { t } = useI18n();
   return (
     <div className="page">
       <header className="pageHeader">
-        <h1>Painel do Admin</h1>
-        <p>Gerencie alunos, treinos, desafios e acompanhe relatórios.</p>
+        <h1>{t('admin.home.title')}</h1>
+        <p>{t('admin.home.subtitle')}</p>
       </header>
 
       <section className="card">
-        <h2>MVP sugerido</h2>
+        <h2>{t('admin.home.suggestedMvp')}</h2>
         <ul className="list">
-          <li>Listagem de alunos + status</li>
-          <li>Criar/atribuir treinos e desafios</li>
-          <li>Ver completados, pontuação e ranking</li>
+          <li>{t('admin.home.item1')}</li>
+          <li>{t('admin.home.item2')}</li>
+          <li>{t('admin.home.item3')}</li>
         </ul>
       </section>
     </div>

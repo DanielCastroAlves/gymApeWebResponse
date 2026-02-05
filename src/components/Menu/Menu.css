@@ -27,6 +27,12 @@
   object-fit: contain; /* Garante que a proporção seja mantida */
 }
 
+.menu-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .side-menu {
   position: fixed;
   top: 60px; /* Fica abaixo do header */

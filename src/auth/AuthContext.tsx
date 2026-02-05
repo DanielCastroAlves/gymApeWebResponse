@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { t as i18nT } from '../i18n/i18n';
 
 export type UserRole = 'aluno' | 'admin';
 
@@ -44,7 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Se houver backend configurado via VITE_API_URL, usa API.
     // Caso contrário, mantém o mock atual (MVP).
     if (!email.trim() || !password.trim()) {
-      throw new Error('Informe e-mail e senha.');
+      throw new Error(i18nT('auth.errors.enterEmailAndPassword'));
     }
 
     const apiBase = import.meta.env.VITE_API_URL as string | undefined;
@@ -58,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const json = (await res.json()) as any;
       if (!res.ok) {
-        throw new Error(json?.error?.message ?? 'Falha no login.');
+        throw new Error(json?.error?.message ?? i18nT('auth.errors.loginFailed'));
       }
 
       const nextUser: AuthUser = json.user;
@@ -71,7 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const role = inferRoleFromEmail(email);
     const nextUser: AuthUser = {
       id: crypto.randomUUID(),
-      name: role === 'admin' ? 'Administrador' : 'Aluno',
+      name: role === 'admin' ? i18nT('auth.roles.admin') : i18nT('auth.roles.student'),
       email,
       role,
     };
@@ -94,7 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth deve ser usado dentro de AuthProvider.');
+  if (!ctx) throw new Error(i18nT('dev.errors.useAuthOutsideProvider'));
   return ctx;
 }
 

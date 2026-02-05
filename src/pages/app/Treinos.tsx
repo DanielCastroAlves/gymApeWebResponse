@@ -1,20 +1,22 @@
 import './pages.css';
+import { useI18n } from '../../i18n/I18nProvider';
 
 export default function Treinos() {
+  const { t } = useI18n();
   return (
     <div className="page">
       <header className="pageHeader">
-        <h1>Treinos</h1>
-        <p>Lista de treinos (por objetivo) e detalhes do treino.</p>
+        <h1>{t('app.workouts.title')}</h1>
+        <p>{t('app.workouts.subtitle')}</p>
       </header>
 
       <section className="card">
-        <h2>Em construção</h2>
-        <p>Próximos componentes aqui:</p>
+        <h2>{t('app.workouts.buildingTitle')}</h2>
+        <p>{t('app.workouts.buildingSubtitle')}</p>
         <ul className="list">
-          <li>Treino do dia / semana</li>
-          <li>Detalhe do treino com exercícios</li>
-          <li>Checklist de execução e histórico</li>
+          <li>{t('app.workouts.item1')}</li>
+          <li>{t('app.workouts.item2')}</li>
+          <li>{t('app.workouts.item3')}</li>
         </ul>
       </section>
     </div>

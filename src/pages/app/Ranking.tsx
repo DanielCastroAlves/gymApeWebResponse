@@ -1,19 +1,21 @@
 import './pages.css';
+import { useI18n } from '../../i18n/I18nProvider';
 
 export default function Ranking() {
+  const { t } = useI18n();
   return (
     <div className="page">
       <header className="pageHeader">
-        <h1>Ranking</h1>
-        <p>Ranking semanal e pontuação por desafios concluídos.</p>
+        <h1>{t('app.ranking.title')}</h1>
+        <p>{t('app.ranking.subtitle')}</p>
       </header>
 
       <section className="card">
-        <h2>Mock</h2>
+        <h2>{t('app.ranking.mockTitle')}</h2>
         <ol className="list">
-          <li>Você (0 pts)</li>
-          <li>Aluno 2 (0 pts)</li>
-          <li>Aluno 3 (0 pts)</li>
+          <li>{t('app.ranking.you')}</li>
+          <li>{t('app.ranking.student2')}</li>
+          <li>{t('app.ranking.student3')}</li>
         </ol>
       </section>
     </div>

@@ -7,6 +7,7 @@ import { FaFacebook, FaGoogle, FaApple } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom'; // Importa o hook de navegação
 import { useState } from 'react';
 import { useAuth } from '../../../../auth/AuthContext';
+import { useI18n } from '../../../../i18n/I18nProvider';
 
 interface BemVindoProps {
   voltar: () => void;
@@ -15,6 +16,7 @@ interface BemVindoProps {
 export default function BemVindo({ voltar }: BemVindoProps) {
   const navigate = useNavigate(); // Inicializa o hook de navegação
   const { signIn } = useAuth();
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
@@ -27,7 +29,7 @@ export default function BemVindo({ voltar }: BemVindoProps) {
       const user = await signIn({ email, password });
       navigate(user.role === 'admin' ? '/admin' : '/app', { replace: true });
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Não foi possível entrar.');
+      setError(e instanceof Error ? e.message : t('auth.errors.unableToSignIn'));
     } finally {
       setSubmitting(false);
     }
@@ -38,30 +40,34 @@ export default function BemVindo({ voltar }: BemVindoProps) {
       <div className="bem-vindo-overlay"></div>
       <div className="bem-vindo-content">
         <BotaoVoltar onClick={voltar} />
-        <img src={logo} alt="Logo" className="logo" />
-        <h1 className="bem-vindo-titulo">Welcome Back!</h1>
+        <img src={logo} alt={t('menu.logoAlt')} className="logo" />
+        <h1 className="bem-vindo-titulo">{t('login.welcomeBack')}</h1>
         <div className="input-group">
           <Input
-            label="Email"
-            placeholder="Digite seu email"
+            label={t('login.email')}
+            placeholder={t('login.emailPlaceholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             error={error}
           />
           <Input
-            label="Password"
-            placeholder="Digite sua senha"
+            label={t('login.password')}
+            placeholder={t('login.passwordPlaceholder')}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="bem-vindo-links">
-          <a href="#" className="bem-vindo-link">Remember me</a>
-          <a href="#" className="bem-vindo-link">Forgot my password</a>
+          <a href="#" className="bem-vindo-link">
+            {t('login.rememberMe')}
+          </a>
+          <a href="#" className="bem-vindo-link">
+            {t('login.forgotPassword')}
+          </a>
         </div>
-        <Botao title={submitting ? 'Entrando...' : 'Login'} onClick={handleLogin} disabled={submitting} />
-        <p className="or-divider">or</p>
+        <Botao title={submitting ? t('login.entering') : t('login.login')} onClick={handleLogin} disabled={submitting} />
+        <p className="or-divider">{t('common.or')}</p>
         <div className="social-media">
           <FaFacebook className="social-media-icon facebook" />
           <FaGoogle className="social-media-icon google" />

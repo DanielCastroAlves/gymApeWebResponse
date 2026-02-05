@@ -1,16 +1,18 @@
 import './pages.css';
+import { useI18n } from '../../i18n/I18nProvider';
 
 export default function Progresso() {
+  const { t } = useI18n();
   return (
     <div className="page">
       <header className="pageHeader">
-        <h1>Progresso</h1>
-        <p>Tempo de treino semanal, consistência e evolução.</p>
+        <h1>{t('app.progress.title')}</h1>
+        <p>{t('app.progress.subtitle')}</p>
       </header>
 
       <section className="card">
-        <h2>Em construção</h2>
-        <p>Aqui vão entrar gráficos e indicadores (MVP: texto + contadores).</p>
+        <h2>{t('app.progress.buildingTitle')}</h2>
+        <p>{t('app.progress.buildingSubtitle')}</p>
       </section>
     </div>
   );
