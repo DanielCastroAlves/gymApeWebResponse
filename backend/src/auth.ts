@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import type { UserRole } from './db';
+import type { UserRole } from './db.js';
 
 export interface PublicUser {
   id: string;

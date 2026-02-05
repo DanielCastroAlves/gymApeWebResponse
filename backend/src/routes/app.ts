@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import type Database from 'better-sqlite3';
 import { z } from 'zod';
-import { asyncHandler, httpError } from '../http';
-import type { AuthedRequest } from '../middleware/auth';
+import { asyncHandler, httpError } from '../http.js';
+import type { AuthedRequest } from '../middleware/auth.js';
 
 export function appRoutes(params: { db: Database.Database }) {
   const router = Router();

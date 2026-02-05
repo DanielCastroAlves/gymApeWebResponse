@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import type Database from 'better-sqlite3';
 import { z } from 'zod';
-import { hashPassword, signToken, verifyPassword, type PublicUser } from '../auth';
-import { asyncHandler, httpError } from '../http';
-import type { DbUser, UserRole } from '../db';
+import { hashPassword, signToken, verifyPassword, type PublicUser } from '../auth.js';
+import { asyncHandler, httpError } from '../http.js';
+import type { DbUser, UserRole } from '../db.js';
 
 function toPublicUser(row: Pick<DbUser, 'id' | 'name' | 'email' | 'role'>): PublicUser {
   return { id: row.id, name: row.name, email: row.email, role: row.role };

@@ -1,12 +1,12 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { openDb } from './db';
-import { authRoutes } from './routes/auth';
-import { appRoutes } from './routes/app';
-import { adminRoutes } from './routes/admin';
-import { authMiddleware, requireRole } from './middleware/auth';
-import { seedAdmin } from './seed';
+import { openDb } from './db.js';
+import { authRoutes } from './routes/auth.js';
+import { appRoutes } from './routes/app.js';
+import { adminRoutes } from './routes/admin.js';
+import { authMiddleware, requireRole } from './middleware/auth.js';
+import { seedAdmin } from './seed.js';
 
 const PORT = Number(process.env.PORT ?? 4000);
 const JWT_SECRET = process.env.JWT_SECRET ?? 'change-me';

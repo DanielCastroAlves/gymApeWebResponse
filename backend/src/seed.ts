@@ -1,6 +1,6 @@
 import type Database from 'better-sqlite3';
-import { hashPassword } from './auth';
-import type { UserRole } from './db';
+import { hashPassword } from './auth.js';
+import type { UserRole } from './db.js';
 
 export async function seedAdmin(params: {
   db: Database.Database;

@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 import type Database from 'better-sqlite3';
-import { verifyToken } from '../auth';
-import { httpError } from '../http';
-import type { DbUser, UserRole } from '../db';
+import { verifyToken } from '../auth.js';
+import { httpError } from '../http.js';
+import type { DbUser, UserRole } from '../db.js';
 
 export interface AuthedRequest extends Request {
   auth?: { userId: string; role: UserRole };
