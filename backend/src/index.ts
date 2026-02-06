@@ -5,12 +5,15 @@ import { openDb } from './db.js';
 import { authRoutes } from './routes/auth.js';
 import { appRoutes } from './routes/app.js';
 import { adminRoutes } from './routes/admin.js';
-import { authMiddleware, requireRole } from './middleware/auth.js';
+import { authMiddleware, requireAnyRole } from './middleware/auth.js';
 import { seedAdmin } from './seed.js';
 
 const PORT = Number(process.env.PORT ?? 4000);
 const JWT_SECRET = process.env.JWT_SECRET ?? 'change-me';
-const CORS_ORIGIN = process.env.CORS_ORIGIN ?? 'http://localhost:5173';
+const CORS_ORIGINS = (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 const db = openDb();
 
@@ -22,7 +25,7 @@ await seedAdmin({
 });
 
 const app = express();
-app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
+app.use(cors({ origin: CORS_ORIGINS, credentials: true }));
 app.use(express.json());
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
@@ -34,7 +37,7 @@ app.use('/app', authMiddleware({ db, jwtSecret: JWT_SECRET }), appRoutes({ db })
 app.use(
   '/admin',
   authMiddleware({ db, jwtSecret: JWT_SECRET }),
-  requireRole('admin'),
+  requireAnyRole(['admin', 'professor']),
   adminRoutes({ db }),
 );
 

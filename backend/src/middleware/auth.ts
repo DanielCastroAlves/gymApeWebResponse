@@ -43,3 +43,11 @@ export function requireRole(role: UserRole) {
   };
 }
 
+export function requireAnyRole(roles: UserRole[]) {
+  return (req: AuthedRequest, _res: Response, next: NextFunction) => {
+    if (!req.user) return next(httpError(401, 'Não autenticado'));
+    if (!roles.includes(req.user.role)) return next(httpError(403, 'Sem permissão'));
+    return next();
+  };
+}
+

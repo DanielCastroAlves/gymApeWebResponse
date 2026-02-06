@@ -32,7 +32,7 @@ export function verifyToken(params: { token: string; jwtSecret: string }): JwtPa
   const sub = decoded.sub;
   const role = decoded.role;
   if (typeof sub !== 'string') throw new Error('Token inválido');
-  if (role !== 'aluno' && role !== 'admin') throw new Error('Token inválido');
+  if (role !== 'aluno' && role !== 'professor' && role !== 'admin') throw new Error('Token inválido');
   return { sub, role };
 }
 

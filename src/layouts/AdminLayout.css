@@ -1,11 +1,12 @@
 .admin-shell {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   background: url("../assets/imagens/imagem-de-fundo.png") no-repeat center center /
     cover;
   position: relative;
   padding-top: 60px;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .admin-shell-overlay {

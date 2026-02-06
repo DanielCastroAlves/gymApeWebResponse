@@ -1,36 +1,33 @@
 import { useEffect, useMemo, useState } from 'react';
-import './pages.css';
-import { apiFetch } from '../../api/client';
-import { useI18n } from '../../i18n/I18nProvider';
-import Modal from '../../components/Modal/Modal';
+import { Link, useNavigate } from 'react-router-dom';
+import '../pages.css';
+import { apiFetch } from '../../../api/client';
+import { useI18n } from '../../../i18n/I18nProvider';
+import Modal from '../../../components/Modal/Modal';
+import { FaArrowLeft } from 'react-icons/fa';
 
 type UserRole = 'aluno' | 'professor' | 'admin';
 type UserRow = { id: string; name: string; email: string; role: UserRole; created_at: string };
 
-export default function Alunos() {
+export default function UsersList() {
   const { t } = useI18n();
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [users, setUsers] = useState<UserRow[]>([]);
-  const [modal, setModal] = useState<{ open: boolean; title: string; message?: string; actions?: Array<{ label: string; onClick: () => void; variant?: 'primary' | 'ghost' }> }>({
-    open: false,
-    title: '',
-  });
+  const [modal, setModal] = useState<{
+    open: boolean;
+    title: string;
+    message?: string;
+    actions?: Array<{ label: string; onClick: () => void; variant?: 'primary' | 'ghost' }>;
+  }>({ open: false, title: '' });
 
   const [adminActionMsg, setAdminActionMsg] = useState<string | null>(null);
   const [sendingResetFor, setSendingResetFor] = useState<string | null>(null);
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState<UserRole>('aluno');
-  const [password, setPassword] = useState('');
-  const [creating, setCreating] = useState(false);
-  const [createLock, setCreateLock] = useState(false);
-
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | UserRole>('all');
-
-  const canCreate = useMemo(() => name.trim() && email.trim() && password.trim().length >= 6, [name, email, password]);
 
   const load = async () => {
     setError(null);
@@ -66,52 +63,12 @@ export default function Alunos() {
     void load();
   }, []);
 
-  const handleCreate = async () => {
-    if (!canCreate) return;
-    if (createLock || creating) return;
-    setCreateLock(true);
-    setCreating(true);
-    setError(null);
-    setAdminActionMsg(null);
-    try {
-      await apiFetch('/admin/users', {
-        method: 'POST',
-        body: JSON.stringify({ name, email, role, password }),
-      });
-      setName('');
-      setEmail('');
-      setRole('aluno');
-      setPassword('');
-      await load();
-
-      setModal({
-        open: true,
-        title: t('admin.users.createdTitle'),
-        message: t('admin.users.createdMessage'),
-        actions: [{ label: t('common.ok'), variant: 'primary', onClick: () => setModal({ open: false, title: '' }) }],
-      });
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : t('admin.users.createFailed');
-      setError(msg);
-      setModal({
-        open: true,
-        title: t('admin.users.createFailed'),
-        message: msg,
-        actions: [{ label: t('common.ok'), variant: 'primary', onClick: () => setModal({ open: false, title: '' }) }],
-      });
-    } finally {
-      setCreating(false);
-      setCreateLock(false);
-    }
-  };
-
   const handleCopyEmail = async (emailValue: string) => {
     setAdminActionMsg(null);
     try {
       await navigator.clipboard.writeText(emailValue);
       setAdminActionMsg(t('admin.admins.copied'));
     } catch {
-      // fallback
       window.prompt(t('admin.admins.copyEmail'), emailValue);
     }
   };
@@ -141,62 +98,26 @@ export default function Alunos() {
 
   return (
     <div className="page">
-      <Modal
-        open={modal.open}
-        title={modal.title}
-        message={modal.message}
-        actions={modal.actions}
-        onClose={() => setModal({ open: false, title: '' })}
-      />
+      <Modal open={modal.open} title={modal.title} message={modal.message} actions={modal.actions} onClose={() => setModal({ open: false, title: '' })} />
+
       <header className="pageHeader">
-        <h1>{t('admin.users.title')}</h1>
+        <div className="pageTitleRow">
+          <button className="backIconBtn" type="button" onClick={() => navigate(-1)} aria-label={t('common.back')}>
+            <FaArrowLeft />
+          </button>
+          <h1>{t('admin.users.title')}</h1>
+        </div>
         <p>{t('admin.users.subtitle')}</p>
       </header>
 
       <section className="card" style={{ marginBottom: '1rem' }}>
-        <h2>{t('admin.users.registerTitle')}</h2>
-        <div className="formGrid">
-          <label className="field">
-            <span>{t('admin.students.name')}</span>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('admin.students.namePlaceholder')} />
-          </label>
-          <label className="field">
-            <span>{t('admin.students.email')}</span>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('admin.students.emailPlaceholder')} />
-          </label>
-          <label className="field">
-            <span>{t('admin.users.role')}</span>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as UserRole)}
-              style={{ padding: '0.65rem 0.75rem', borderRadius: 10 }}
-            >
-              <option value="aluno">{t('auth.roles.student')}</option>
-              <option value="professor">{t('auth.roles.teacher')}</option>
-              <option value="admin">{t('auth.roles.admin')}</option>
-            </select>
-          </label>
-          <label className="field">
-            <span>{t('admin.students.password')}</span>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder={t('admin.students.passwordPlaceholder')}
-            />
-          </label>
+        <div className="toolbar">
+          <h2 style={{ margin: 0 }}>{t('admin.users.listTitle')}</h2>
+          <Link className="primaryBtn" to="/admin/usuarios/novo" style={{ textDecoration: 'none', display: 'inline-block' }}>
+            {t('admin.users.newUser')}
+          </Link>
         </div>
-        <button className="primaryBtn" onClick={handleCreate} disabled={!canCreate || creating}>
-          {creating ? t('admin.users.creating') : t('admin.users.create')}
-        </button>
-        {error && <p className="errorText">{error}</p>}
-        <p className="hintText">
-          {t('admin.students.tip')} <code>VITE_API_URL</code> {t('admin.students.tipSuffix')}
-        </p>
-      </section>
 
-      <section className="card">
-        <h2>{t('admin.users.listTitle')}</h2>
         <div className="formGrid" style={{ gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 240px)' }}>
           <label className="field">
             <span>{t('admin.users.searchLabel')}</span>
@@ -204,11 +125,7 @@ export default function Alunos() {
           </label>
           <label className="field">
             <span>{t('admin.users.roleFilterLabel')}</span>
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value as any)}
-              style={{ padding: '0.65rem 0.75rem', borderRadius: 10 }}
-            >
+            <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value as any)} style={{ padding: '0.65rem 0.75rem', borderRadius: 10 }}>
               <option value="all">{t('admin.users.allRoles')}</option>
               <option value="aluno">{t('auth.roles.student')}</option>
               <option value="professor">{t('auth.roles.teacher')}</option>
@@ -217,7 +134,12 @@ export default function Alunos() {
           </label>
         </div>
 
-        {adminActionMsg && <p className="hintText" style={{ marginTop: 0 }}>{adminActionMsg}</p>}
+        {adminActionMsg && (
+          <p className="hintText" style={{ marginTop: 0 }}>
+            {adminActionMsg}
+          </p>
+        )}
+
         {loading ? (
           <p>{t('common.loading')}</p>
         ) : (
@@ -237,25 +159,17 @@ export default function Alunos() {
                   <tr key={u.id}>
                     <td>{u.name}</td>
                     <td>{u.email}</td>
-                    <td>
-                      {u.role === 'admin'
-                        ? t('auth.roles.admin')
-                        : u.role === 'professor'
-                          ? t('auth.roles.teacher')
-                          : t('auth.roles.student')}
-                    </td>
+                    <td>{u.role === 'admin' ? t('auth.roles.admin') : u.role === 'professor' ? t('auth.roles.teacher') : t('auth.roles.student')}</td>
                     <td>{new Date(u.created_at).toLocaleString()}</td>
                     <td>
                       <span className="actionRow">
+                        <button className="ghostBtn" type="button" onClick={() => navigate(`/admin/usuarios/${u.id}`)}>
+                          {t('admin.users.details')}
+                        </button>
                         <button className="ghostBtn" type="button" onClick={() => void handleCopyEmail(u.email)}>
                           {t('admin.admins.copyEmail')}
                         </button>
-                        <button
-                          className="primaryBtn"
-                          type="button"
-                          onClick={() => void handleSendReset(u.id)}
-                          disabled={sendingResetFor === u.id}
-                        >
+                        <button className="primaryBtn" type="button" onClick={() => void handleSendReset(u.id)} disabled={sendingResetFor === u.id}>
                           {t('admin.admins.sendReset')}
                         </button>
                       </span>
@@ -271,6 +185,8 @@ export default function Alunos() {
             </table>
           </div>
         )}
+
+        {error && <p className="errorText">{error}</p>}
       </section>
     </div>
   );

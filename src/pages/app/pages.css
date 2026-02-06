@@ -8,6 +8,30 @@
   margin-bottom: 1.25rem;
 }
 
+.pageTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.backIconBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backIconBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .pageHeader h1 {
   margin: 0;
   font-size: 1.8rem;
@@ -57,9 +81,165 @@
   padding-left: 1.2rem;
 }
 
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+}
+
+.muted {
+  opacity: 0.85;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.statValue {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.statLabel {
+  margin-top: 0.25rem;
+  opacity: 0.9;
+}
+
+.progressBars {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+  align-items: end;
+  height: 120px;
+  margin-top: 0.75rem;
+}
+
+.progressBar {
+  width: 100%;
+  border-radius: 10px;
+  background: rgba(255, 94, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.progressBarMuted {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.progressBarLabel {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  text-align: center;
+  opacity: 0.85;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.fieldInline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 180px;
+}
+
+.fieldInline input {
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  outline: none;
+}
+
+.btnRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  margin-top: 0.25rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  border: none;
+  background: #ff5e00;
+  color: #000;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ghostBtn {
+  margin-top: 0.25rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.podiumCard {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.podiumPos {
+  font-weight: 800;
+  opacity: 0.95;
+}
+
+.podiumName {
+  margin-top: 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.podiumPoints {
+  margin-top: 0.25rem;
+  opacity: 0.9;
+}
+
+.meRow {
+  background: rgba(255, 94, 0, 0.12);
+}
+
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+  .podium {
+    grid-template-columns: 1fr;
+  }
+  .progressBars {
+    height: 90px;
   }
 }
 

@@ -49,6 +49,11 @@ const Menu: React.FC<MenuProps> = ({ logo, mode = 'aluno', onLogout }) => {
                 </Link>
               </li>
               <li>
+                <Link to="/app/desafios" onClick={closeMenu}>
+                  {t('menu.challenges')}
+                </Link>
+              </li>
+              <li>
                 <Link to="/app/ranking" onClick={closeMenu}>
                   {t('menu.ranking')}
                 </Link>
@@ -62,7 +67,7 @@ const Menu: React.FC<MenuProps> = ({ logo, mode = 'aluno', onLogout }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/admin/alunos" onClick={closeMenu}>
+                <Link to="/admin/usuarios" onClick={closeMenu}>
                   {t('menu.students')}
                 </Link>
               </li>

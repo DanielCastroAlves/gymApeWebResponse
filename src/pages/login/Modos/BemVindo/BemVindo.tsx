@@ -23,6 +23,7 @@ export default function BemVindo({ voltar }: BemVindoProps) {
   const [submitting, setSubmitting] = useState(false);
 
   const handleLogin = async () => {
+    if (submitting) return;
     setError(undefined);
     setSubmitting(true);
     try {
@@ -62,7 +63,14 @@ export default function BemVindo({ voltar }: BemVindoProps) {
           <a href="#" className="bem-vindo-link">
             {t('login.rememberMe')}
           </a>
-          <a href="#" className="bem-vindo-link">
+          <a
+            href="#"
+            className="bem-vindo-link"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/forgot-password');
+            }}
+          >
             {t('login.forgotPassword')}
           </a>
         </div>

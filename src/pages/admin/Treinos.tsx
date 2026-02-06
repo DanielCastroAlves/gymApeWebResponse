@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import './pages.css';
 import { apiFetch } from '../../api/client';
 import { useI18n } from '../../i18n/I18nProvider';
+import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 
 type Aluno = { id: string; name: string; email: string };
 type Workout = {
@@ -21,8 +23,14 @@ type WorkoutItemDraft = {
   notes?: string;
 };
 
+const SETS_PRESETS = [2, 3, 4, 5, 6] as const;
+const REPS_PRESETS = ['6', '8', '10', '12', '15', '8-12', '10-12', '12-15', 'até a falha'] as const;
+const WEIGHT_PRESETS = ['barra', '2.5kg', '5kg', '7.5kg', '10kg', '12.5kg', '15kg', '20kg', '25kg', '30kg', '40kg', '50kg'] as const;
+const REST_PRESETS = [30, 45, 60, 90, 120, 150, 180] as const;
+
 export default function TreinosAdmin() {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [alunos, setAlunos] = useState<Aluno[]>([]);
@@ -34,6 +42,8 @@ export default function TreinosAdmin() {
   const [objective, setObjective] = useState('');
   const [items, setItems] = useState<WorkoutItemDraft[]>([{ name: '' }]);
   const [creating, setCreating] = useState(false);
+  const [editingTemplateId, setEditingTemplateId] = useState<string>('');
+  const [loadingTemplate, setLoadingTemplate] = useState(false);
 
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
   const [selectedAlunoId, setSelectedAlunoId] = useState<string>('');
@@ -69,6 +79,7 @@ export default function TreinosAdmin() {
 
   const handleCreateTemplate = async () => {
     if (!canCreateTemplate) return;
+    if (creating) return;
     setCreating(true);
     setError(null);
     try {
@@ -96,6 +107,7 @@ export default function TreinosAdmin() {
       setTitle('');
       setObjective('');
       setItems([{ name: '' }]);
+      setEditingTemplateId('');
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : t('admin.workouts.createFailed'));
@@ -104,8 +116,40 @@ export default function TreinosAdmin() {
     }
   };
 
+  const handleLoadTemplate = async () => {
+    if (!editingTemplateId) return;
+    if (loadingTemplate) return;
+    setLoadingTemplate(true);
+    setError(null);
+    try {
+      const data = await apiFetch<{
+        workout: { id: string; title: string; objective: string };
+        items: Array<{ name: string; sets: number | null; reps: string | null; weight: string | null; rest_seconds: number | null; notes: string | null }>;
+      }>(`/admin/workouts/${editingTemplateId}`);
+      setTitle(data.workout.title);
+      setObjective(data.workout.objective);
+      setItems(
+        data.items.length
+          ? data.items.map((it) => ({
+              name: it.name,
+              sets: it.sets ?? undefined,
+              reps: it.reps ?? undefined,
+              weight: it.weight ?? undefined,
+              rest_seconds: it.rest_seconds ?? undefined,
+              notes: it.notes ?? undefined,
+            }))
+          : [{ name: '' }],
+      );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : t('admin.workouts.loadFailed'));
+    } finally {
+      setLoadingTemplate(false);
+    }
+  };
+
   const handleAssign = async () => {
     if (!selectedTemplateId || !selectedAlunoId) return;
+    if (assigning) return;
     setAssigning(true);
     setError(null);
     try {
@@ -124,7 +168,12 @@ export default function TreinosAdmin() {
   return (
     <div className="page">
       <header className="pageHeader">
-        <h1>{t('admin.workouts.title')}</h1>
+        <div className="pageTitleRow">
+          <button className="backIconBtn" type="button" onClick={() => navigate(-1)} aria-label={t('common.back')}>
+            <FaArrowLeft />
+          </button>
+          <h1>{t('admin.workouts.title')}</h1>
+        </div>
         <p>{t('admin.workouts.subtitle')}</p>
       </header>
 
@@ -136,7 +185,39 @@ export default function TreinosAdmin() {
 
       <section className="card" style={{ marginBottom: '1rem' }}>
         <h2>{t('admin.workouts.createTemplateTitle')}</h2>
-        <div className="formGrid" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+
+        <div className="toolbar">
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'end' }}>
+            <label className="field" style={{ minWidth: 260 }}>
+              <span>{t('admin.workouts.editExisting')}</span>
+              <select value={editingTemplateId} onChange={(e) => setEditingTemplateId(e.target.value)}>
+                <option value="">{t('admin.workouts.select')}</option>
+                {templates.map((tpl) => (
+                  <option key={tpl.id} value={tpl.id}>
+                    {tpl.title} — {tpl.objective}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button className="ghostBtn" type="button" onClick={() => void handleLoadTemplate()} disabled={!editingTemplateId || loadingTemplate}>
+              {loadingTemplate ? t('common.loading') : t('admin.workouts.loadTemplate')}
+            </button>
+          </div>
+          <button
+            className="ghostBtn"
+            type="button"
+            onClick={() => {
+              setEditingTemplateId('');
+              setTitle('');
+              setObjective('');
+              setItems([{ name: '' }]);
+            }}
+          >
+            {t('admin.workouts.newFromScratch')}
+          </button>
+        </div>
+
+        <div className="formGrid2">
           <label className="field">
             <span>{t('admin.workouts.templateTitle')}</span>
             <input
@@ -158,12 +239,29 @@ export default function TreinosAdmin() {
         <div className="card" style={{ background: 'rgba(0,0,0,0.25)', borderColor: 'rgba(255,255,255,0.12)' }}>
           <h3 style={{ marginTop: 0 }}>{t('admin.workouts.workoutItemsTitle')}</h3>
           {items.map((it, idx) => (
-            <div
-              key={idx}
-              className="formGrid"
-              style={{ gridTemplateColumns: '2fr 0.6fr 0.8fr 0.8fr 0.8fr', alignItems: 'end' }}
-            >
-              <label className="field">
+            <div key={idx} className="workoutItemGrid">
+              <datalist id="sets-presets">
+                {SETS_PRESETS.map((v) => (
+                  <option key={v} value={String(v)} />
+                ))}
+              </datalist>
+              <datalist id="reps-presets">
+                {REPS_PRESETS.map((v) => (
+                  <option key={v} value={v} />
+                ))}
+              </datalist>
+              <datalist id="weight-presets">
+                {WEIGHT_PRESETS.map((v) => (
+                  <option key={v} value={v} />
+                ))}
+              </datalist>
+              <datalist id="rest-presets">
+                {REST_PRESETS.map((v) => (
+                  <option key={v} value={String(v)} />
+                ))}
+              </datalist>
+
+              <label className="field workoutItemExercise">
                 <span>{t('admin.workouts.exercise')}</span>
                 <input
                   value={it.name}
@@ -178,11 +276,13 @@ export default function TreinosAdmin() {
               <label className="field">
                 <span>{t('admin.workouts.sets')}</span>
                 <input
+                  list="sets-presets"
                   value={it.sets ?? ''}
                   onChange={(e) => {
                     const next = [...items];
                     const v = e.target.value.trim();
-                    next[idx] = { ...next[idx], sets: v ? Number(v) : undefined };
+                    const n = v ? Number(v) : NaN;
+                    next[idx] = { ...next[idx], sets: !v ? undefined : Number.isFinite(n) ? n : next[idx].sets };
                     setItems(next);
                   }}
                   inputMode="numeric"
@@ -192,6 +292,7 @@ export default function TreinosAdmin() {
               <label className="field">
                 <span>{t('admin.workouts.reps')}</span>
                 <input
+                  list="reps-presets"
                   value={it.reps ?? ''}
                   onChange={(e) => {
                     const next = [...items];
@@ -204,6 +305,7 @@ export default function TreinosAdmin() {
               <label className="field">
                 <span>{t('admin.workouts.weight')}</span>
                 <input
+                  list="weight-presets"
                   value={it.weight ?? ''}
                   onChange={(e) => {
                     const next = [...items];
@@ -216,11 +318,13 @@ export default function TreinosAdmin() {
               <label className="field">
                 <span>{t('admin.workouts.restSeconds')}</span>
                 <input
+                  list="rest-presets"
                   value={it.rest_seconds ?? ''}
                   onChange={(e) => {
                     const next = [...items];
                     const v = e.target.value.trim();
-                    next[idx] = { ...next[idx], rest_seconds: v ? Number(v) : undefined };
+                    const n = v ? Number(v) : NaN;
+                    next[idx] = { ...next[idx], rest_seconds: !v ? undefined : Number.isFinite(n) ? n : next[idx].rest_seconds };
                     setItems(next);
                   }}
                   inputMode="numeric"
@@ -260,7 +364,7 @@ export default function TreinosAdmin() {
           <p>{t('common.loading')}</p>
         ) : (
           <>
-            <div className="formGrid" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+            <div className="formGrid2">
               <label className="field">
                 <span>{t('admin.workouts.student')}</span>
                 <select

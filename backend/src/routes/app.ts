@@ -7,6 +7,18 @@ import type { AuthedRequest } from '../middleware/auth.js';
 export function appRoutes(params: { db: Database.Database }) {
   const router = Router();
 
+  function utcMidnightIso(d: Date) {
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).toISOString();
+  }
+
+  function utcWeekStartIso(d: Date) {
+    // Monday as week start
+    const day = d.getUTCDay(); // 0..6, 0=Sun
+    const diffToMonday = (day + 6) % 7; // Mon=0, Tue=1, ..., Sun=6
+    const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - diffToMonday));
+    return utcMidnightIso(monday);
+  }
+
   router.get(
     '/me',
     asyncHandler(async (req: AuthedRequest, res) => {
@@ -67,16 +79,69 @@ export function appRoutes(params: { db: Database.Database }) {
     asyncHandler(async (req: AuthedRequest, res) => {
       if (!req.user) throw httpError(401, 'Não autenticado');
 
+      const now = new Date();
+      const nowIso = now.toISOString();
+      const dayKey = utcMidnightIso(now);
+      const weekKey = utcWeekStartIso(now);
+
       const rows = params.db
         .prepare(
           `SELECT id, title, points, frequency, active_from, active_to, user_id, created_by, created_at
            FROM challenges
            WHERE (user_id IS NULL OR user_id = ?)
+             AND (active_from IS NULL OR active_from <= ?)
+             AND (active_to IS NULL OR active_to >= ?)
            ORDER BY created_at DESC`,
         )
-        .all(req.user.id);
+        .all(req.user.id, nowIso, nowIso) as Array<{
+        id: string;
+        title: string;
+        points: number;
+        frequency: 'daily' | 'weekly';
+        active_from: string | null;
+        active_to: string | null;
+        user_id: string | null;
+        created_by: string;
+        created_at: string;
+      }>;
 
-      res.json({ challenges: rows });
+      const dailyIds = rows.filter((c) => c.frequency === 'daily').map((c) => c.id);
+      const weeklyIds = rows.filter((c) => c.frequency === 'weekly').map((c) => c.id);
+
+      const completedDaily = new Set<string>();
+      const completedWeekly = new Set<string>();
+
+      if (dailyIds.length) {
+        const placeholders = dailyIds.map(() => '?').join(',');
+        const done = params.db
+          .prepare(
+            `SELECT challenge_id FROM challenge_completions
+             WHERE user_id = ? AND completed_at = ? AND challenge_id IN (${placeholders})`,
+          )
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .all(req.user.id, dayKey, ...dailyIds) as Array<{ challenge_id: string }>;
+        done.forEach((r) => completedDaily.add(r.challenge_id));
+      }
+
+      if (weeklyIds.length) {
+        const placeholders = weeklyIds.map(() => '?').join(',');
+        const done = params.db
+          .prepare(
+            `SELECT challenge_id FROM challenge_completions
+             WHERE user_id = ? AND completed_at = ? AND challenge_id IN (${placeholders})`,
+          )
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .all(req.user.id, weekKey, ...weeklyIds) as Array<{ challenge_id: string }>;
+        done.forEach((r) => completedWeekly.add(r.challenge_id));
+      }
+
+      res.json({
+        period: { dayKey, weekKey },
+        challenges: rows.map((c) => ({
+          ...c,
+          completed: c.frequency === 'daily' ? completedDaily.has(c.id) : completedWeekly.has(c.id),
+        })),
+      });
     }),
   );
 
@@ -86,22 +151,38 @@ export function appRoutes(params: { db: Database.Database }) {
       if (!req.user) throw httpError(401, 'Não autenticado');
       const challengeId = z.string().uuid().parse(req.params.id);
 
-      // Default: 1 completion por dia por desafio (MVP).
-      const now = new Date();
-      const dayKey = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString();
+      const body = z
+        .object({
+          completed: z.boolean().optional(),
+        })
+        .parse(req.body ?? {});
 
-      try {
+      const challenge = params.db
+        .prepare(`SELECT id, frequency FROM challenges WHERE id = ? AND (user_id IS NULL OR user_id = ?) LIMIT 1`)
+        .get(challengeId, req.user.id) as { id: string; frequency: 'daily' | 'weekly' } | undefined;
+      if (!challenge) throw httpError(404, 'Desafio não encontrado');
+
+      const now = new Date();
+      const key = challenge.frequency === 'weekly' ? utcWeekStartIso(now) : utcMidnightIso(now);
+      const shouldComplete = body.completed ?? true;
+
+      if (shouldComplete) {
         params.db
           .prepare(
-            `INSERT INTO challenge_completions (id, user_id, challenge_id, completed_at)
+            `INSERT OR IGNORE INTO challenge_completions (id, user_id, challenge_id, completed_at)
              VALUES (?, ?, ?, ?)`,
           )
-          .run(crypto.randomUUID(), req.user.id, challengeId, dayKey);
-      } catch {
-        throw httpError(409, 'Desafio já marcado como concluído hoje');
+          .run(crypto.randomUUID(), req.user.id, challengeId, key);
+      } else {
+        params.db
+          .prepare(
+            `DELETE FROM challenge_completions
+             WHERE user_id = ? AND challenge_id = ? AND completed_at = ?`,
+          )
+          .run(req.user.id, challengeId, key);
       }
 
-      res.json({ ok: true });
+      res.json({ ok: true, completed: shouldComplete, key });
     }),
   );
 

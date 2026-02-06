@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { t as i18nT } from '../i18n/i18n';
 
-export type UserRole = 'aluno' | 'admin';
+export type UserRole = 'aluno' | 'professor' | 'admin';
 
 export interface AuthUser {
   id: string;
@@ -25,7 +25,10 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 function inferRoleFromEmail(email: string): UserRole {
   // Regra simples (mock): emails com "admin" viram admin.
   // Troque isso quando plugar seu backend.
-  return email.toLowerCase().includes('admin') ? 'admin' : 'aluno';
+  const lower = email.toLowerCase();
+  if (lower.includes('admin')) return 'admin';
+  if (lower.includes('prof') || lower.includes('teacher')) return 'professor';
+  return 'aluno';
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
